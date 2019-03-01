@@ -6,26 +6,26 @@ module RuboCop
       # Check that indexes are added concurrently with disable_ddl_transaction!
       # @example
       #  # bad
-      #   class AddLockableToDevise < ActiveRecord::Migration
+      #   class SomeTableMigrations < ActiveRecord::Migration
       #     def change
-      #       add_column :users, :failed_attempts, :integer, default: 0, null: false
-      #       add_column :users, :unlock_token, :string
-      #       add_column :users, :locked_at, :datetime
-      #       add_index  :users,
-      #                  :unlock_token,
+      #       add_column :table, :some_column_1, :integer, default: 0, null: false
+      #       add_column :table, :other_column, :string
+      #       add_column :table, :doneit_at, :datetime
+      #       add_index  :table,
+      #                  :other_column,
       #                  unique: true
       #     end
       #   end
       #
       #  # good
-      #   class AddLockableToDevise < ActiveRecord::Migration
+      #   class SomeTableMigrations < ActiveRecord::Migration
       #     disable_ddl_transaction!
       #     def change
-      #       add_column :users, :failed_attempts, :integer, default: 0, null: false
-      #       add_column :users, :unlock_token, :string
-      #       add_column :users, :locked_at, :datetime
-      #       add_index  :users,
-      #                  :unlock_token,
+      #       add_column :table, :some_column_1, :integer, default: 0, null: false
+      #       add_column :table, :other_column, :string
+      #       add_column :table, :doneit_at, :datetime
+      #       add_index  :table,
+      #                  :other_column,
       #                  unique: true,
       #                  algorithm: :concurrently
       #       end

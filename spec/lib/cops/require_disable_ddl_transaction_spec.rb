@@ -11,13 +11,13 @@ RSpec.describe RuboCop::Cop::Trail::RequireDisableDdlTransaction do
     context 'and it is not a migration' do
       it 'does not register an ignore ddl offence' do
         expect_no_offenses(<<-RUBY)
-        class AddLockableToDevise
+        class SomeTableMigrations
             def change
-              add_column :users, :failed_attempts, :integer, default: 0, null: false
-              add_column :users, :unlock_token, :string
-              add_column :users, :locked_at, :datetime
-              add_index  :users,
-                         :unlock_token,
+              add_column :table, :some_column_1, :integer, default: 0, null: false
+              add_column :table, :other_column, :string
+              add_column :table, :doneit_at, :datetime
+              add_index  :table,
+                         :other_column,
                          unique: true,
                          algorithm: :concurrently
             end
@@ -29,14 +29,14 @@ RSpec.describe RuboCop::Cop::Trail::RequireDisableDdlTransaction do
     context 'and an index is not created concurrently' do
       it 'registers an concurrent index offence' do
         expect_offense(<<-RUBY)
-        class AddLockableToDevise < ActiveRecord::Migration
+        class SomeTableMigrations < ActiveRecord::Migration
             def change
-              add_column :users, :failed_attempts, :integer, default: 0, null: false
-              add_column :users, :unlock_token, :string
-              add_column :users, :locked_at, :datetime
-              add_index  :users,
+              add_column :table, :some_column_1, :integer, default: 0, null: false
+              add_column :table, :other_column, :string
+              add_column :table, :doneit_at, :datetime
+              add_index  :table,
               ^^^^^^^^^^^^^^^^^^ Indexes should be added with 'algorithm: :concurrently'
-                         :unlock_token,
+                         :other_column,
                          unique: true
             end
           end
@@ -47,14 +47,14 @@ RSpec.describe RuboCop::Cop::Trail::RequireDisableDdlTransaction do
     context 'and an index is created concurrently' do
       it 'registers an ignore ddl offence' do
         expect_offense(<<-RUBY)
-        class AddLockableToDevise < ActiveRecord::Migration
+        class SomeTableMigrations < ActiveRecord::Migration
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Concurrent indexes require "disable_ddl_transaction!"
             def change
-              add_column :users, :failed_attempts, :integer, default: 0, null: false
-              add_column :users, :unlock_token, :string
-              add_column :users, :locked_at, :datetime
-              add_index  :users,
-                         :unlock_token,
+              add_column :table, :some_column_1, :integer, default: 0, null: false
+              add_column :table, :other_column, :string
+              add_column :table, :doneit_at, :datetime
+              add_index  :table,
+                         :other_column,
                          unique: true,
                          algorithm: :concurrently
             end
@@ -68,12 +68,12 @@ RSpec.describe RuboCop::Cop::Trail::RequireDisableDdlTransaction do
     context 'when not a migration' do
       it 'does not register an offense ' do
         expect_no_offenses(<<-RUBY)
-          class AddLockableToDevise
+          class SomeTableMigrations
             disable_ddl_transaction!
             def change
-              add_column :users, :locked_at, :datetime, :index
-              add_index  :users,
-                         :unlock_token,
+              add_column :table, :doneit_at, :datetime, :index
+              add_index  :table,
+                         :other_column,
                          unique: true,
                          algorithm: :concurrently
             end
@@ -85,12 +85,12 @@ RSpec.describe RuboCop::Cop::Trail::RequireDisableDdlTransaction do
     context 'and an index is registered concurrently' do
       it 'does not register an offense' do
         expect_no_offenses(<<-RUBY)
-          class AddLockableToDevise < ActiveRecord::Migration
+          class SomeTableMigrations < ActiveRecord::Migration
             disable_ddl_transaction!
             def change
-              add_column :users, :locked_at, :datetime
-              add_index  :users,
-                         :unlock_token,
+              add_column :table, :doneit_at, :datetime
+              add_index  :table,
+                         :other_column,
                          unique: true,
                          algorithm: :concurrently
             end
@@ -102,14 +102,14 @@ RSpec.describe RuboCop::Cop::Trail::RequireDisableDdlTransaction do
     context 'and an index is not registered concurrently' do
       it 'registers an concurrency offense' do
         expect_offense(<<-RUBY)
-          class AddLockableToDevise < ActiveRecord::Migration
+          class SomeTableMigrations < ActiveRecord::Migration
             disable_ddl_transaction!
             def change
-              add_column :users, :locked_at, :datetime, :index
+              add_column :table, :doneit_at, :datetime, :index
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Indexes should be added with 'algorithm: :concurrently'
-              add_index  :users,
+              add_index  :table,
               ^^^^^^^^^^^^^^^^^^ Indexes should be added with 'algorithm: :concurrently'
-                         :unlock_token,
+                         :other_column,
                          unique: true
             end
           end
@@ -131,15 +131,15 @@ end
 
 # xit 'registers an offense when index is added concurrently' do
 #   expect_offense(<<-RUBY)
-#   class AddLockableToDevise < ActiveRecord::Migration
+#   class SomeTableMigrations < ActiveRecord::Migration
 #   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Concurrent indexes require "disable_ddl_transaction!" at the top of the class
 #     disable_ddl_transaction!
 #     def change
-#       add_column :users, :failed_attempts, :integer, default: 0, null: false
-#       add_column :users, :unlock_token, :string
-#       add_column :users, :locked_at, :datetime
-#       add_index  :users,
-#                 :unlock_token,
+#       add_column :table, :some_column_1, :integer, default: 0, null: false
+#       add_column :table, :other_column, :string
+#       add_column :table, :doneit_at, :datetime
+#       add_index  :table,
+#                 :other_column,
 #                 unique: true,
 #                 algorithm: :concurrently
 #     end
@@ -149,16 +149,16 @@ end
 
 # xit 'xxxregisters an offense when index not added concurrently' do
 #   expect_offense(<<-RUBY)
-#   class AddLockableToDevise < ActiveRecord::Migration
+#   class SomeTableMigrations < ActiveRecord::Migration
 #     disable_ddl_transaction!
 #     ^^^^^^^^^^^^^^^^^^^^^^^^ Concurrent indexes require "disable_ddl_transaction!" at the top of the class
 
 #     def change
-#       add_column :users, :failed_attempts, :integer, default: 0, null: false
-#       add_column :users, :unlock_token, :string
-#       add_column :users, :locked_at, :datetime
-#       add_index  :users,
-#                 :unlock_token,
+#       add_column :table, :some_column_1, :integer, default: 0, null: false
+#       add_column :table, :other_column, :string
+#       add_column :table, :doneit_at, :datetime
+#       add_index  :table,
+#                 :other_column,
 #                 unique: true,
 #                 algorithm: :concurrently
 #     end
@@ -167,14 +167,14 @@ end
 # end
 # xit 'does not register an offense when index not added concurrently' do
 #   expect_no_offenses(<<-RUBY)
-#   class AddLockableToDevise < ActiveRecord::Migration
+#   class SomeTableMigrations < ActiveRecord::Migration
 #       disable_ddl_transaction!
 #       def change
-#         add_column :users, :failed_attempts, :integer, default: 0, null: false
-#         add_column :users, :unlock_token, :string
-#         add_column :users, :locked_at, :datetime
-#         add_index  :users,
-#                   :unlock_token,
+#         add_column :table, :some_column_1, :integer, default: 0, null: false
+#         add_column :table, :other_column, :string
+#         add_column :table, :doneit_at, :datetime
+#         add_index  :table,
+#                   :other_column,
 #                   unique: true
 #       end
 #     end
@@ -183,14 +183,14 @@ end
 
 # xit 'does not register an offense when index not a migration' do
 #   expect_no_offenses(<<-RUBY)
-#   class AddLockableToDevise < ActiveRecord::Migration
+#   class SomeTableMigrations < ActiveRecord::Migration
 #       disable_ddl_transaction!
 #       def change
-#         add_column :users, :failed_attempts, :integer, default: 0, null: false
-#         add_column :users, :unlock_token, :string
-#         add_column :users, :locked_at, :datetime
-#         add_index  :users,
-#                   :unlock_token,
+#         add_column :table, :some_column_1, :integer, default: 0, null: false
+#         add_column :table, :other_column, :string
+#         add_column :table, :doneit_at, :datetime
+#         add_index  :table,
+#                   :other_column,
 #                   unique: true
 #       end
 #     end
@@ -199,11 +199,11 @@ end
 
 # xit 'does not register an offense when not a migration' do
 #   expect_no_offenses(<<-RUBY)
-#   class AddLockableToDevise
+#   class SomeTableMigrations
 #       def change
-#         add_column :users, :locked_at, :datetime, :index
-#         add_index  :users,
-#                   :unlock_token,
+#         add_column :table, :doneit_at, :datetime, :index
+#         add_index  :table,
+#                   :other_column,
 #                   unique: true
 #       end
 #     end
