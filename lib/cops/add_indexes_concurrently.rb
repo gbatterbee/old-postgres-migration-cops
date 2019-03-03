@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     module Trail
       # Check that indexes are added concurrently with disable_ddl_transaction!
+      # https://thoughtbot.com/blog/how-to-create-postgres-indexes-concurrently-in
+      #
       # @example
       #  # bad
       #   class SomeTableMigrations < ActiveRecord::Migration

@@ -3,17 +3,15 @@
 module RuboCop
   module Cop
     module Trail
-      # Check that indexes are added concurrently with disable_ddl_transaction!
+      # Check that indexes are added explicitly with add_index
+      # to ensure concurrency can be enabled
+      #
       # @example
       #  # bad
       #   class SomeTableMigrations < ActiveRecord::Migration
       #     def change
-      #       add_column :table, :some_column_1, :integer, default: 0, null: false
-      #       add_column :table, :other_column, :string
-      #       add_column :table, :doneit_at, :datetime
-      #       add_index  :table,
-      #                  :other_column,
-      #                  unique: true
+      #       add_column :table, :some_column_1, :integer, :index
+      #       add_column :table, :other_column, :string, index: true
       #     end
       #   end
       #
@@ -21,13 +19,16 @@ module RuboCop
       #   class SomeTableMigrations < ActiveRecord::Migration
       #     disable_ddl_transaction!
       #     def change
-      #       add_column :table, :some_column_1, :integer, default: 0, null: false
+      #       add_column :table, :some_column_1, :integer
       #       add_column :table, :other_column, :string
       #       add_column :table, :doneit_at, :datetime
       #       add_index  :table,
-      #                  :other_column,
-      #                  unique: true,
+      #                  :some_column_1,
       #                  algorithm: :concurrently
+      #       add_index  :table,
+      #                  :other_column,
+      #                  algorithm: :concurrently
+
       #       end
       #   end
       class UseAddIndex < Cop
