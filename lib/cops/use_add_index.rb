@@ -58,7 +58,7 @@ module RuboCop
 
         def contains_hash_index?(node)
           opts_node = node.children.last
-          return unless opts_node.type == :hash
+          return unless opts_node.class == RuboCop::AST::HashNode
 
           opts_node.children.any? { |n| is_index_pair? n }
         end

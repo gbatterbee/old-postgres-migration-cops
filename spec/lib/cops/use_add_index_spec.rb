@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Trail::UseAddIndex do
     end
   end
 
-  context 'whe it is not a migration' do
+  context 'when it is not a migration' do
     it 'does not register an offence' do
       expect_no_offenses(<<-RUBY)
         class SomeTableMigrations
@@ -67,6 +67,21 @@ RSpec.describe RuboCop::Cop::Trail::UseAddIndex do
                          :other_column,
                          unique: true
             end
+          end
+      RUBY
+    end
+  end
+
+  context 'when disable_ddl_transaction! is sepcified' do
+    it 'does not register an offence' do
+      expect_no_offenses(<<-RUBY)
+        class SomeTableMigrations < ActiveRecord::Migration
+          disable_ddl_transaction!
+          def change
+            add_column :table, :some_column_1, :integer
+            add_column :table, :other_column, :string
+            add_column :table, :doneit_at, :datetime
+          end
           end
       RUBY
     end
