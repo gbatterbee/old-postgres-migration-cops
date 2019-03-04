@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rubocop'
 
 desc 'Generate a new cop template'
