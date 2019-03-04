@@ -2,7 +2,7 @@ require './lib/cops/use_add_index'
 
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Trail::UseAddIndex do
+RSpec.describe RuboCop::Cop::PostgresMigrationCops::UseAddIndex do
   subject(:cop) { described_class.new }
 
   context 'when index is declared as an option' do

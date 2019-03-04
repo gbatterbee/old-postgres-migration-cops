@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Trail
+    module PostgresMigrationCops
       # Check that indexes are added explicitly with add_index
       # to ensure concurrency can be enabled
       #

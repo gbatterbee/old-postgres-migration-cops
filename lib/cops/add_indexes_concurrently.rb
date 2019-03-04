@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Trail
+    module PostgresMigrationCops
       # Check that indexes are added concurrently with disable_ddl_transaction!
       # https://thoughtbot.com/blog/how-to-create-postgres-indexes-concurrently-in
       #

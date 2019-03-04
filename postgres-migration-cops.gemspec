@@ -10,5 +10,5 @@ Gem::Specification.new do |s|
                    'lib/cops/add-indexes-concurrently.rb']
   s.homepage    = 'http://'
   s.license     = 'MIT'
-  s.executables << 'trail-cop'
+  s.executables << 'postgres-migrations-cop'
 end

@@ -2,7 +2,7 @@ require './lib/cops/add_indexes_concurrently'
 
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Trail::AddIndexesConcurrently do
+RSpec.describe RuboCop::Cop::PostgresMigrationCops::AddIndexesConcurrently do
   subject(:cop) { described_class.new }
 
   context 'when disable_ddl_transaction! is not declared' do
